@@ -1,0 +1,18 @@
+{
+    "roomcode": {
+        "currentPlayer": -1,
+        "stage": false,
+        "gridSize": 8,
+        "shipsCount": 4,
+        "players": {
+            "socketid": {
+                "name": "Simahero",
+                "color": "#efefef"
+            },
+            "socketid2": {
+                "name": "Simahero2",
+                "color": "#ababab"
+            }
+        }
+    }
+}

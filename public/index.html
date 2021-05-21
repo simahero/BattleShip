@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <script defer src="./index.js"></script>
+    <title>socket.io</title>
+</head>
+
+<body>
+
+    <div class="main">
+        <div class="gameholder">
+            <div id="table">
+            </div>
+        </div>
+        <div id="optionsholder">
+            <form>
+                <div id="options-1" class="form-options">
+                    <input type="text" id="name" placeholder="NAME">
+                    <input type="color" id="color">
+                    <button id="next" type='button'>NEXT</button>
+                </div>
+                <div id="options-2" class="form-options">
+                    <button id="create" type='button'>CREATE</button>
+                    <p align="center">OR</p>
+                    <input type="text" id="gamecode" placeholder="GAME CODE">
+                    <button id="join" type='button'>JOIN</button>
+                </div>
+                <div id="options-3" class="form-options">
+                    <input type="number" id="tablesize" min="8" max="32" value="8" placeholder="MAP SIZE">
+                    <input type="number" id="shipscount" min="1" max="8" value="4" placeholder="SHIP COUNT">
+                    <button id="start" type='button'>LET'S GO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
