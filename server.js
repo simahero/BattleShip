@@ -5,7 +5,7 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const { Server } = require("socket.io")
 
-const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT } = require('./src/constants')
+const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT, TIMER } = require('./src/constants')
 const { createInitialState, handleJoinState, gameLoop } = require('./src/battleship')
 const { createGameCode } = require('./src/utils')
 
@@ -41,10 +41,14 @@ io.on(CONNECT, (socket) => {
             return handleCreateRoom(CODE_LENGTH)
         }
 
-        const socketPlayer = Object.assign({ id: socket.id }, player)
+        const socketPlayer = Object.assign(
+            { id: socket.id }, 
+            player, 
+            { ships: [] }, 
+            { isDead: false })
 
         clientRooms[socket.id] = gameCode
-
+        console.log(clientRooms)
         states[gameCode] = createInitialState(gridSize, shipsCount)
         states[gameCode] = handleJoinState(states[gameCode], socketPlayer)
 
@@ -59,10 +63,16 @@ io.on(CONNECT, (socket) => {
 
         if (room && room.size < ROOM_SIZE) {
 
-            const socketPlayer = Object.assign({ id: socket.id }, player)
+            const socketPlayer = Object.assign(
+                { id: socket.id }, 
+                player, 
+                { ships: [] }, 
+                { isDead: false })
 
             clientRooms[socket.id] = gameCode
             states[gameCode] = handleJoinState(states[gameCode], socketPlayer)
+
+            console.log(clientRooms)
 
             socket.player = player
 
@@ -86,26 +96,63 @@ io.on(CONNECT, (socket) => {
 
     function handleClick({ position }) {
         const room = clientRooms[socket.id]
+        console.log(room, states[room])
         if (room) {
+            //NOT THE PLAYERS TURN
             if (socket.id !== states[room].que[states[room].currentPlayer]) return
+            
+            //PLACING SHIPS
             if (states[clientRooms[socket.id]].stage === 0) {
+                states[room].players[socket.id].ships.push(position)
+            }
 
-            } //placing
+            //ATTACKING
             if (states[clientRooms[socket.id]].stage === 1) {
+                let hit = getHit(states[room].players, position)
+                if (hit) {
+                    //keep the ship
+                    delete states[room].players[hit.id].ships[hit.shipPosition]
+                    states[room].bombedAres.push({ position, belongsTo: hit.id })
+                } else {
+                    states[room].bombedAres.push({ position, belongsTo: -1 })
+                }
+            }
 
-            } //battle
             states[room].currentPlayer = (states[room].currentPlayer + 1) % states[room].que.length
+            states[room].turns++
+            states[room].timer = TIMER
         }
+    }
+
+    function getHit(players, position) {
+        for (const [id, player] of Object.entries(players)) {
+            const hasShip = player.ships.includes(position)
+            if (hasShip) {
+                return {
+                    id,
+                    player,
+                    shipPosition: position
+                }
+            }
+        }
+        return false
     }
 
     function startGameInterval(gameCode) {
         const intervalId = setInterval(() => {
-            const winner = gameLoop(states[gameCode]);
-            if (!winner) {
+            const { isGameOver, state } = gameLoop(states[gameCode]);
+            //console.log( isGameOver, JSON.stringify(state, null, 2) )
+            if (!isGameOver && state ) {
+                io.to(gameCode).emit( IN_GAME, state )
+                // for (const [id, player] of Object.entries(states[gameCode].players)) {
+                //     io.to(id).emit(IN_GAME, {
+                //         player,
+                //         bombs: state.bombedAres,
+                //         timer: state.timer,
 
-                for (const [id, player] of Object.entries(states[gameCode].players)) {
-                    io.to(id).emit(IN_GAME, player)
-                }
+                //     })
+                // }
+                states[gameCode] = state
                 //emmit state to clients
             } else {
                 io.to(gameCode).emit(GAME_OVER, states[gameCode])
@@ -116,13 +163,15 @@ io.on(CONNECT, (socket) => {
     }
 
 
-    socket.on(DISCONNECT, () => {
+    socket.on( DISCONNECT, () => {
         const room = clientRooms[socket.id]
         if (room) {
             delete clientRooms[socket.id]
             delete states[room].players[socket.id]
-            if (Object.keys(states[room].players).length < 2) states[room].players = null
-            io.to(room).emit(GAME_OVER)
+            if (Object.keys(states[room].players).length < 2) {
+                states[room].players = null
+                io.to(room).emit(GAME_OVER)
+            }
         }
     });
 

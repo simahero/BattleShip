@@ -10,6 +10,7 @@ const ALLOWED_HIT = 'allowed_hit'
 const HIT = 'hit'
 const ROOM_SIZE = 2
 const CODE_LENGTH = 6
+const TIMER = 20
 
 module.exports = {
     CONNECT,
@@ -23,5 +24,6 @@ module.exports = {
     ALLOWED_HIT,
     HIT,
     ROOM_SIZE,
-    CODE_LENGTH
+    CODE_LENGTH,
+    TIMER
 }

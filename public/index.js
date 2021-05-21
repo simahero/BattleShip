@@ -1,6 +1,6 @@
 (function () {
 
-    var socket = io('')
+    const socket = io('')
     /*
         @INIT
     */
@@ -99,6 +99,30 @@
         })
     }
 
+    function handleInGameResponse(state){
+        //TIMER
+        //STAGE
+        //TURN
+        //AM I THE CURRENT PLAYER? players[que[current]]
+        for ( const [id, player] of Object.entries(state.players)){
+            let color = player.color
+            player.ships.forEach(e => {
+                document.getElementById(e).style.backgroundColor = color;
+            })
+        }
+
+        state.bombedAres.forEach( area => {
+            if (area.belongsTo === -1){
+                document.getElementById(area.position).style.backgroundColor = '#3b3b3b'
+            } else {
+                let cell = document.getElementById(area.position)
+                cell.style.backgroundColor = state.players[belongsTo].color
+                cell.style.border = '3px solid #3b3b3b'
+            }
+        })
+
+    }
+
     /*
         @HTML EVENTS
     */
@@ -150,7 +174,7 @@
 
     socket.on('gameCode', gameCode => console.log(gameCode))
     socket.on('response', response => console.log(response))
-    socket.on('in_game', response => console.log(response))
-    socket.on('game_over', response => console.log(response))
+    socket.on('in_game', state => handleInGameResponse(state))
+    socket.on('game_over', () => console.log('Game over?'))
 
 }).call(this)
