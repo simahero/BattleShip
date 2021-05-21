@@ -5,7 +5,7 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const { Server } = require("socket.io")
 
-const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT, TIMER } = require('./src/constants')
+const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT, TIMER, GAME_CODE } = require('./src/constants')
 const { createInitialState, handleJoinState, gameLoop } = require('./src/battleship')
 const { createGameCode } = require('./src/utils')
 
@@ -48,13 +48,14 @@ io.on(CONNECT, (socket) => {
             { isDead: false })
 
         clientRooms[socket.id] = gameCode
-        console.log(clientRooms)
         states[gameCode] = createInitialState(gridSize, shipsCount)
         states[gameCode] = handleJoinState(states[gameCode], socketPlayer)
 
         socket.player = player
 
-        socket.emit('gameCode', gameCode)
+        //players
+        socket.emit(GAME_CODE, gameCode)
+        socket.emit(JOIN_ROOM, states[gameCode].players )
         socket.join(gameCode)
     }
 
@@ -71,13 +72,13 @@ io.on(CONNECT, (socket) => {
 
             clientRooms[socket.id] = gameCode
             states[gameCode] = handleJoinState(states[gameCode], socketPlayer)
-
-            console.log(clientRooms)
-
             socket.player = player
 
             socket.join(gameCode)
-            io.to(socket.id).emit(RESPONSE, { success: `Successfully joined to room:${gameCode}` })
+            //io.to(socket.id).emit(RESPONSE, { success: `Successfully joined to room:${gameCode}` })
+            socket.emit(GAME_CODE, gameCode)
+            console.log(states[gameCode].players)
+            io.to(gameCode).emit(JOIN_ROOM, states[gameCode].players )
 
             if (room.size === ROOM_SIZE) {
                 //start the game

@@ -26,13 +26,20 @@
 
     window.onresize = () => resizeTabe(this.state.gridSize)
 
-    const optionsHolder = document.getElementById('optionsholder')
+    const gameForm = document.getElementById('gameForm')
 
     const nameInput = document.getElementById('name')
     const colorInput = document.getElementById('color')
     const codeInput = document.getElementById('gamecode')
     const tableSizeInput = document.getElementById('tablesize')
     const shipsCount = document.getElementById('shipscount')
+
+    const gameDetails = document.getElementById('gameDetails')
+    const roomCode = document.getElementById('roomCode')
+    const timer = document.getElementById('timer')
+    const players = document.getElementById('players')
+    const stage = document.getElementById('stage')
+    const turn = document.getElementById('turn')
 
     const op1 = document.getElementById('options-1')
     const op2 = document.getElementById('options-2')
@@ -54,7 +61,7 @@
 
     function cellClickHandler(e) {
 
-        socket.emit('hit', {position: e.target.id} )
+        socket.emit('hit', { position: e.target.id })
         // let currentCell = this.state.table.cells[e.target.id]
 
         // //Clicking on a new cell while theres one clicked.
@@ -75,7 +82,7 @@
         // }
     }
 
-    function resizeTabe(gridSize){
+    function resizeTabe(gridSize) {
         let gameholder = document.querySelectorAll('.gameholder')[0]
         let w = gameholder.clientWidth - 2 * parseInt(window.getComputedStyle(gameholder, null).getPropertyValue('padding-left'))
         let h = gameholder.clientHeight - 2 * parseInt(window.getComputedStyle(gameholder, null).getPropertyValue('padding-top'))
@@ -99,20 +106,33 @@
         })
     }
 
-    function handleInGameResponse(state){
-        //TIMER
-        //STAGE
+    function handleInGameResponse(state) {
+        timer.textContent = state.timer
+        //onjoin?
+
+        switch (state.stage) {
+            case -1:
+                stage.textContent = 'Waiting for other players...'
+                break
+            case 0:
+                stage.textContent = 'Placing ships'
+                break
+            case 1:
+                stage.textContent = 'Battle!'
+        }
+
+        turn.textContent = state.turn
         //TURN
         //AM I THE CURRENT PLAYER? players[que[current]]
-        for ( const [id, player] of Object.entries(state.players)){
+        for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
             player.ships.forEach(e => {
                 document.getElementById(e).style.backgroundColor = color;
             })
         }
 
-        state.bombedAres.forEach( area => {
-            if (area.belongsTo === -1){
+        state.bombedAres.forEach(area => {
+            if (area.belongsTo === -1) {
                 document.getElementById(area.position).style.backgroundColor = '#3b3b3b'
             } else {
                 let cell = document.getElementById(area.position)
@@ -143,13 +163,14 @@
         op3.style.display = "flex"
     }
 
-    joinButton.onclick =  () => {
+    joinButton.onclick = () => {
         socket.emit('join_room', {
             gameCode: codeInput.value,
             player: this.state.player
         })
         codeInput.value = ''
-        optionsHolder.style.display = "none"
+        gameForm.style.display = "none"
+        gameDetails.style.display = "flex"
     }
 
     startButton.onclick = () => {
@@ -158,7 +179,8 @@
             shipsCount: shipsCount.value,
             player: this.state.player
         })
-        optionsHolder.style.display = "none"
+        gameForm.style.display = "none"
+        gameDetails.style.display = "flex"
         this.hasStarted = true
     }
 
@@ -172,7 +194,29 @@
         @SOCKET EVENTS
     */
 
-    socket.on('gameCode', gameCode => console.log(gameCode))
+    socket.on('game_code', code => {
+        roomCode.textContent = code
+    })
+    socket.on('join_room', response => {
+        console.log(response)
+        for (const [id, player] of Object.entries(response)) {
+            if (!document.getElementById(id)) {
+                const li = document.createElement('li')
+                li.id = id
+
+                const p = document.createElement('p')
+                p.textContent = player.name
+
+                const div = document.createElement('div')
+                div.classList.add('colorHolder')
+                div.style.backgroundColor = player.color
+
+                li.appendChild(p)
+                li.append(div)
+                players.appendChild(li)
+            }
+        }
+    })
     socket.on('response', response => console.log(response))
     socket.on('in_game', state => handleInGameResponse(state))
     socket.on('game_over', () => console.log('Game over?'))

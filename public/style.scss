@@ -117,4 +117,31 @@ body {
             opacity: .6;
         }
     }
+    #gameDetails {
+        display: none;
+        color: white;
+        text-align: center;
+        width: 100%;
+        #roomCode {
+            margin-bottom: 25px;
+        }
+        ul {
+            li{
+                list-style: none;
+                height: 22px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 5px;
+                font-size: 18px;
+                .colorHolder {
+                    width: 22px;
+                    height: 22px;
+                    border-radius: 50%;
+                    border: 1px solid white;
+                }
+            }
+        }
+    }
 }

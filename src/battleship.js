@@ -34,7 +34,7 @@ const gameLoop = (state) => {
     }
 
 
-    if (state.stage === 2) {
+    if (state.stage === 1) {
         let alives = 0
         for (const [id, player] of Object.entries(state.players)) {
             if (player.ships.length === 0) {

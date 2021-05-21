@@ -193,4 +193,42 @@ body {
   color: white;
   opacity: .6;
 }
+
+#optionsholder #gameDetails {
+  display: none;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+#optionsholder #gameDetails #roomCode {
+  margin-bottom: 25px;
+}
+
+#optionsholder #gameDetails ul li {
+  list-style: none;
+  height: 22px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+#optionsholder #gameDetails ul li .colorHolder {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid white;
+}
 /*# sourceMappingURL=style.css.map */
