@@ -4,14 +4,17 @@
     /*
         @INIT
     */
-    const gameForm = document.getElementById('gameForm')
+
+    const gameholder = document.getElementById('game-holder')
+    const grid = document.getElementById('grid')
+    const gameForm = document.getElementById('game-form')
     const nameInput = document.getElementById('name')
     const colorInput = document.getElementById('color')
-    const codeInput = document.getElementById('gamecode')
-    const tableSizeInput = document.getElementById('tablesize')
-    const shipsCount = document.getElementById('shipscount')
-    const gameDetails = document.getElementById('gameDetails')
-    const roomCode = document.getElementById('roomCode')
+    const codeInput = document.getElementById('game-code')
+    const gridSizeInput = document.getElementById('grid-size')
+    const shipsCount = document.getElementById('ships-count')
+    const gameDetails = document.getElementById('game-details')
+    const roomCode = document.getElementById('room-code')
     const timer = document.getElementById('timer')
     const players = document.getElementById('players')
     const stage = document.getElementById('stage')
@@ -23,8 +26,8 @@
     const startButton = document.getElementById('start')
     const joinButton = document.getElementById('join')
     const createButton = document.getElementById('create')
-    const copyButton = document.getElementById('copyButton')
-    const copyInput = document.getElementById('copyInput')
+    const copyButton = document.getElementById('copy-button')
+    const copyInput = document.getElementById('copy-input')
     const cells = () => document.querySelectorAll('.cell')
     /*
     const RESPONSE = 'response';
@@ -43,7 +46,7 @@
     }
 
     window.onload = () => {
-        createTable(8)
+        createGrid(8)
         nameInput.placeholder = localStorage.getItem('name') || 'Player'
         colorInput.value = localStorage.getItem('color') || '#ffffff'
         op2.style.display = "none"
@@ -57,20 +60,19 @@
     }
 
     function resizeTabe(gridSize) {
-        let gameholder = document.querySelectorAll('.gameholder')[0]
         let w = gameholder.clientWidth - 2 * parseInt(window.getComputedStyle(gameholder, null).getPropertyValue('padding-left'))
         let h = gameholder.clientHeight - 2 * parseInt(window.getComputedStyle(gameholder, null).getPropertyValue('padding-top'))
         let cellW = Math.min(w, h) / gridSize
-        table.style.gridTemplateColumns = `repeat(${gridSize}, ${cellW}px [col-start])`
-        table.style.gridTemplateRows = `repeat(${gridSize}, ${cellW}px [col-start])`
+        grid.style.gridTemplateColumns = `repeat(${gridSize}, ${cellW}px [col-start])`
+        grid.style.gridTemplateRows = `repeat(${gridSize}, ${cellW}px [col-start])`
     }
 
-    function createTable(gridSize) {
+    function createGrid(gridSize) {
         let html = ''
         for (let i = 0; i < gridSize * gridSize; i++) {
             html += `<div id="${i}" class="cell"></div>`
         }
-        table.innerHTML = html
+        grid.innerHTML = html
         resizeTabe(gridSize)
         cells().forEach(e => {
             e.onclick = cellClickHandler
@@ -79,12 +81,15 @@
 
     function handleInGameResponse(state) {
 
+
         document.querySelectorAll('.cell').forEach(e => {
             e.style.backgroundColor = '#ffffff'
         })
 
-        timer.textContent = `TIMER: ${state.timer}`
-        //onjoin?
+        timer.textContent = `${Math.round(state.timer)}`
+    
+        document.querySelectorAll('#players > li').forEach(e => e.style.color = 'white')
+        document.getElementById(state.que[state.currentPlayer]).style.color = 'red'
 
         switch (state.stage) {
             case -1:
@@ -97,7 +102,7 @@
                 stage.textContent = 'Battle!'
         }
 
-        turns.textContent = `TURN: ${state.turns}`
+        turns.textContent = `${state.turns}`
         //AM I THE CURRENT PLAYER? players[que[current]]
         for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
@@ -112,7 +117,7 @@
             } else {
                 let cell = document.getElementById(area.position)
                 cell.style.backgroundColor = area.belongsTo.color
-                cell.style.border = '5px solid #3b3b3b'
+                cell.style.border = '10px solid #3b3b3b'
             }
         })
 
@@ -150,7 +155,7 @@
 
     startButton.onclick = () => {
         socket.emit('create_room', {
-            gridSize: tableSizeInput.value,
+            gridSize: gridSizeInput.value,
             shipsCount: shipsCount.value,
             player: this.state.player
         })
@@ -163,12 +168,11 @@
         copyInput.select()
         copyInput.setSelectionRange(0, 99999)
         document.execCommand("copy")
-        alert(copyInput.value)
     }
 
-    tableSizeInput.onchange = (e) => {
+    gridSizeInput.onchange = (e) => {
         this.state.gridSize = e.target.value
-        createTable(e.target.value)
+        createGrid(e.target.value)
     }
 
 
@@ -199,9 +203,9 @@
             }
         }
     })
-    socket.on('resize_table', gridSize => {
+    socket.on('resize_grid', gridSize => {
         this.state.gridSize = gridSize
-        createTable(gridSize)
+        createGrid(gridSize)
     })
     socket.on('response', response => console.log(response))
     socket.on('in_game', state => handleInGameResponse(state))

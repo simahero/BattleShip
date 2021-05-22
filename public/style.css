@@ -1,12 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 * {
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
 }
 
 body {
   background-color: #091b33;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+input {
+  padding: 0 10px;
 }
 
 .main {
@@ -34,19 +44,19 @@ body {
         -ms-flex-direction: column;
             flex-direction: column;
   }
-  .main .gameholder {
+  .main #game-holder {
     width: 100%;
     padding: 0;
     padding: 0 15px;
   }
-  .main #optionsholder {
+  .main #options-holder {
     width: 90%;
     padding: 20px;
     margin: 20px;
   }
 }
 
-.gameholder {
+#game-holder {
   height: 100%;
   padding: 30px 30px;
   -webkit-box-flex: 70%;
@@ -66,7 +76,7 @@ body {
       justify-content: space-around;
 }
 
-.gameholder #table {
+#game-holder #grid {
   width: 100%;
   display: -ms-inline-grid;
   display: inline-grid;
@@ -78,7 +88,7 @@ body {
           justify-content: center;
 }
 
-.gameholder #table .cell {
+#game-holder #grid .cell {
   width: 100%;
   height: 100%;
   background-color: white;
@@ -86,7 +96,7 @@ body {
   border-radius: 5px;
 }
 
-#optionsholder {
+#options-holder {
   -webkit-box-flex: 30%;
       -ms-flex: 30%;
           flex: 30%;
@@ -108,7 +118,11 @@ body {
           box-shadow: 5px 5px 7px #00000029;
 }
 
-#optionsholder form {
+#options-holder .divider {
+  margin: 20px 0;
+}
+
+#options-holder #game-form {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -125,7 +139,7 @@ body {
   width: 100%;
 }
 
-#optionsholder form .form-options {
+#options-holder #game-form .form-options {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -136,31 +150,31 @@ body {
   width: 100%;
 }
 
-#optionsholder form .colorpick-eyedropper-input-trigger {
+#options-holder #game-form .colorpick-eyedropper-input-trigger {
   display: none;
 }
 
-#optionsholder form input, #optionsholder form button {
+#options-holder #game-form input, #options-holder #game-form button {
   width: 100%;
   margin: 5px 0;
   height: 40px;
   border: 1px solid white;
   border-radius: 5px;
-  padding: 5px;
+  padding: 0 10px;
   background-color: #091B33;
   color: white;
 }
 
-#optionsholder form p {
+#options-holder #game-form p {
   color: white;
   font-weight: 600;
 }
 
-#optionsholder form #color {
+#options-holder #game-form #color {
   padding: 0;
 }
 
-#optionsholder form ::-webkit-color-swatch-wrapper {
+#options-holder #game-form ::-webkit-color-swatch-wrapper {
   display: -webkit-box;
   display: flex;
   -webkit-box-sizing: border-box;
@@ -171,32 +185,32 @@ body {
   padding: 1px;
 }
 
-#optionsholder form ::-webkit-color-swatch {
+#options-holder #game-form ::-webkit-color-swatch {
   border: unset;
   border-radius: 3px;
 }
 
-#optionsholder form ::-webkit-input-placeholder {
+#options-holder #game-form ::-webkit-input-placeholder {
   color: white;
   opacity: .6;
 }
 
-#optionsholder form :-ms-input-placeholder {
+#options-holder #game-form :-ms-input-placeholder {
   color: white;
   opacity: .6;
 }
 
-#optionsholder form ::-ms-input-placeholder {
+#options-holder #game-form ::-ms-input-placeholder {
   color: white;
   opacity: .6;
 }
 
-#optionsholder form ::placeholder {
+#options-holder #game-form ::placeholder {
   color: white;
   opacity: .6;
 }
 
-#optionsholder #gameDetails {
+#options-holder #game-details {
   display: none;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
@@ -213,7 +227,7 @@ body {
   width: 100%;
 }
 
-#optionsholder #gameDetails .flex-row {
+#options-holder #game-details .flex-row {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -231,17 +245,17 @@ body {
   margin-bottom: 10px;
 }
 
-#optionsholder #gameDetails #copyInput {
+#options-holder #game-details #copy-input {
   position: absolute;
   left: -300px;
   top: -300px;
 }
 
-#optionsholder #gameDetails #stage {
+#options-holder #game-details #stage {
   text-transform: uppercase;
 }
 
-#optionsholder #gameDetails ul li {
+#options-holder #game-details ul li {
   list-style: none;
   height: 22px;
   display: -webkit-box;
@@ -254,14 +268,14 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
   margin-bottom: 5px;
   font-size: 18px;
 }
 
-#optionsholder #gameDetails ul li .colorHolder {
+#options-holder #game-details ul li .colorHolder {
   width: 22px;
   height: 22px;
   border-radius: 50%;

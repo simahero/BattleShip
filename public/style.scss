@@ -1,14 +1,25 @@
 $bg: #091b33;
 $lb: #1e385a;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
     background-color: $bg;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+input {
+    padding: 0 10px;
 }
 
 .main {
@@ -23,12 +34,12 @@ body {
 @media only screen and (max-width: 768px){
     .main {
         flex-direction: column;
-        .gameholder {
+        #game-holder {
             width: 100%;
             padding: 0;
             padding: 0 15px;
         }
-        #optionsholder {
+        #options-holder {
             width: 90%;
             padding: 20px;
             margin: 20px;
@@ -36,7 +47,7 @@ body {
     }
 }
 
-.gameholder {
+#game-holder {
     height: 100%;
     padding: 30px 30px;
     flex: 70%;
@@ -44,7 +55,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    #table {
+    #grid {
         width: 100%;
         display: inline-grid;
         align-items: center;
@@ -59,7 +70,7 @@ body {
     }
 }
 
-#optionsholder {
+#options-holder {
     flex: 30%;
     height: calc(100% - 60px);
     border-radius: 10px;
@@ -70,7 +81,10 @@ body {
     justify-content: center;
     background-color: #083e8424;
     box-shadow: 5px 5px 7px #00000029;
-    form {
+    .divider {
+        margin: 20px 0;
+    }
+    #game-form {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -90,7 +104,7 @@ body {
             height: 40px;
             border: 1px solid white;
             border-radius: 5px;
-            padding: 5px;
+            padding: 0 10px;
             background-color: #091B33;
             color: white;
         }
@@ -118,7 +132,7 @@ body {
             opacity: .6;
         }
     }
-    #gameDetails {
+    #game-details {
         display: none;
         flex-direction: column;
         align-items: center;
@@ -134,7 +148,7 @@ body {
             width: 100%;
             margin-bottom: 10px;
         }
-        #copyInput {
+        #copy-input {
             position: absolute;
             left: -300px;
             top: -300px;
@@ -149,7 +163,7 @@ body {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: space-between;
+                justify-content: space-evenly;
                 margin-bottom: 5px;
                 font-size: 18px;
                 .colorHolder {

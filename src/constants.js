@@ -7,12 +7,13 @@ const GAME_CODE = 'game_code'
 const JOIN_ROOM = 'join_room'
 const GAME_OVER = 'game_over'
 const IN_GAME = 'in_game'
-const RESIZE_TABLE = 'resize_table'
+const RESIZE_GRID = 'resize_grid'
 const ALLOWED_HIT = 'allowed_hit'
 const HIT = 'hit'
-const ROOM_SIZE = 2
+const ROOM_SIZE = 3
 const CODE_LENGTH = 6
 const TIMER = 20
+const FPS = 10
 
 module.exports = {
     CONNECT,
@@ -24,10 +25,11 @@ module.exports = {
     JOIN_ROOM,
     GAME_OVER,
     IN_GAME,
-    RESIZE_TABLE,
+    RESIZE_GRID,
     ALLOWED_HIT,
     HIT,
     ROOM_SIZE,
     CODE_LENGTH,
-    TIMER
+    TIMER,
+    FPS
 }

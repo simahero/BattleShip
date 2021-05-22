@@ -1,6 +1,5 @@
-const { TIMER } = require("./constants")
+const { TIMER, FPS } = require("./constants")
 
-//{id : id, color: color, name: name, ships: [][]}
 function createInitialState(gridSize = 8, shipsCount = 4) {
     return {
         currentPlayer: -1,
@@ -21,7 +20,6 @@ function handleJoinState(state, player) {
     newState.que.push(player.id)
     return newState
 }
-
 
 const gameLoop = (state) => {
     //game logic that runs every second
@@ -54,7 +52,7 @@ const gameLoop = (state) => {
     }
 
 
-    state.timer--
+    state.timer = state.timer - 1 / FPS
 
     if (state.timer === 0) {
         state.timer = TIMER
