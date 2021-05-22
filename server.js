@@ -182,10 +182,10 @@ io.on(CONNECT, (socket) => {
                 io.to(room).emit(GAME_OVER)
             }
         }
-    });
+    })
 
-});
+})
 
 server.listen(process.env.PORT || 3000, () => {
     console.log('Listening on: http://localhost:3000')
-});
+})
