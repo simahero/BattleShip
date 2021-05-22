@@ -36,15 +36,19 @@ const gameLoop = (state) => {
 
     if (state.stage === 1) {
         let alives = 0
-        for (const [id, player] of Object.entries(state.players)) {
-            if (player.ships.length === 0) {
-                player.isDead = true
-            } else {
-                alives++
+        if(Object.keys(state.players).length > 0){
+            for (const [id, player] of Object.entries(state.players)) {
+                console.log(player.ships)
+                if (player.ships.length === 0) {
+                    player.isDead = true
+                } else {
+                    alives++
+                }
             }
         }
 
         if (alives < 2 ){
+            console.log('gameover', alives)
             return { isGameOver: true }
         }
     }

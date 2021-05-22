@@ -7,6 +7,8 @@
     - [x] Implement TURNS.
     - [x] Implement HITS.
     - [x] State for ships and bombs.
+    - [x] No self hit.
+    - [ ] Hitting or placing turns.
     - [ ] Implement Sending back the correct state for each player.
     - [ ] Longer ships?!
 - [ ] UI changes:
@@ -17,7 +19,7 @@
     - [x] Show timer.
     - [x] Show game code.
     - [ ] Move "Timer Interval" to frontend.
-    - [ ] Error GAME OVER
+    - [x] Error GAME OVER
     - [ ] Mobile responibility.
     - [ ] Implement BOMB button.
     - [ ] Add copy button / share button

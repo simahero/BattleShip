@@ -53,7 +53,6 @@ io.on(CONNECT, (socket) => {
 
         socket.player = player
 
-        //players
         socket.emit(GAME_CODE, gameCode)
         socket.emit(JOIN_ROOM, states[gameCode].players)
         socket.join(gameCode)
@@ -77,7 +76,6 @@ io.on(CONNECT, (socket) => {
             socket.join(gameCode)
             //io.to(socket.id).emit(RESPONSE, { success: `Successfully joined to room:${gameCode}` })
             socket.emit(GAME_CODE, gameCode)
-            console.log(states[gameCode].players)
             io.to(socket.id).emit(RESIZE_TABLE, states[gameCode].gridSize)
             io.to(gameCode).emit(JOIN_ROOM, states[gameCode].players)
 
@@ -97,34 +95,44 @@ io.on(CONNECT, (socket) => {
     }
 
     function handleClick({ position }) {
-        const room = clientRooms[socket.id]
-        if (room && states[room]) {
-            //NOT THE PLAYERS TURN
-            if (socket.id !== states[room].que[states[room].currentPlayer]) return
+        const gameCode = clientRooms[socket.id]
+        if (gameCode && states[gameCode]) {
 
-            //PLACING SHIPS
+            //NOT THE PLAYERS TURN
+            if (socket.id !== states[gameCode].que[states[gameCode].currentPlayer]) return
+
+            //PLACING SHIPS // ATTACK???
             if (states[clientRooms[socket.id]].stage === 0) {
-                states[room].players[socket.id].ships.push(position)
+                isEmpty = getHit(states[gameCode].players, position)
+                if (isEmpty === undefined) {
+                    states[gameCode].players[socket.id].ships.push(position)
+                    nextTurn(gameCode)
+                } else if(isEmpty.id !== socket.id){
+                    //hit
+                }
+                console.log(JSON.stringify(states[gameCode].players))
             }
 
-            //ATTACKING
+            //ATTACKING  - NO SELF ATTACK
             if (states[clientRooms[socket.id]].stage === 1) {
-                let hit = getHit(states[room].players, position)
-                console.log(hit);
-                if (hit) {
-                    //keep the ship
-                    let ships = states[room].players[hit.id].ships.filter(x => x != hit.shipPosition)
-                    states[room].players[hit.id].ships = ships
-                    states[room].bombedAres.push({ position, belongsTo: hit.player })
+                let hit = getHit(states[gameCode].players, position)
+                if (hit && (hit.player.id !== socket.id)) {
+                    let ships = states[gameCode].players[hit.id].ships.filter(x => x != hit.shipPosition)
+                    states[gameCode].players[hit.id].ships = ships
+                    states[gameCode].bombedAres.push({ position, belongsTo: hit.player })
+                    nextTurn(gameCode)
                 } else {
-                    states[room].bombedAres.push({ position, belongsTo: -1 })
+                    states[gameCode].bombedAres.push({ position, belongsTo: -1 })
+                    nextTurn(gameCode)
                 }
             }
-
-            states[room].currentPlayer = (states[room].currentPlayer + 1) % states[room].que.length
-            states[room].turns++
-            states[room].timer = TIMER
         }
+    }
+
+    function nextTurn(gameCode) {
+        states[gameCode].currentPlayer = (states[gameCode].currentPlayer + 1) % states[gameCode].que.length
+        states[gameCode].turns++
+        states[gameCode].timer = TIMER
     }
 
     function getHit(players, position) {
@@ -143,9 +151,7 @@ io.on(CONNECT, (socket) => {
     function startGameInterval(gameCode) {
         const intervalId = setInterval(() => {
             const { isGameOver, state } = gameLoop(states[gameCode]);
-            //console.log( isGameOver, JSON.stringify(state, null, 2) )
             if (!isGameOver && state) {
-                console.log(state)
                 io.to(gameCode).emit(IN_GAME, state)
                 // for (const [id, player] of Object.entries(states[gameCode].players)) {
                 //     io.to(id).emit(IN_GAME, {
