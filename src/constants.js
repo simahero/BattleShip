@@ -7,9 +7,10 @@ const GAME_CODE = 'game_code'
 const JOIN_ROOM = 'join_room'
 const GAME_OVER = 'game_over'
 const IN_GAME = 'in_game'
+const RESIZE_TABLE = 'resize_table'
 const ALLOWED_HIT = 'allowed_hit'
 const HIT = 'hit'
-const ROOM_SIZE = 4
+const ROOM_SIZE = 2
 const CODE_LENGTH = 6
 const TIMER = 20
 
@@ -23,6 +24,7 @@ module.exports = {
     JOIN_ROOM,
     GAME_OVER,
     IN_GAME,
+    RESIZE_TABLE,
     ALLOWED_HIT,
     HIT,
     ROOM_SIZE,

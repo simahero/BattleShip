@@ -10,11 +10,14 @@
     - [ ] Implement Sending back the correct state for each player.
     - [ ] Longer ships?!
 - [ ] UI changes:
-    - [ ] Handle gridSize on join.
+    - [x] "Drawing" the state.
+    - [x] Handle gridSize on join.
     - [x] Show players.
     - [x] Show player's color.
     - [x] Show timer.
     - [x] Show game code.
+    - [ ] Move "Timer Interval" to frontend.
+    - [ ] Error GAME OVER
     - [ ] Mobile responibility.
     - [ ] Implement BOMB button.
     - [ ] Add copy button / share button

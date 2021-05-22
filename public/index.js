@@ -39,7 +39,7 @@
     const timer = document.getElementById('timer')
     const players = document.getElementById('players')
     const stage = document.getElementById('stage')
-    const turn = document.getElementById('turn')
+    const turns = document.getElementById('turns')
 
     const op1 = document.getElementById('options-1')
     const op2 = document.getElementById('options-2')
@@ -107,6 +107,12 @@
     }
 
     function handleInGameResponse(state) {
+
+        console.log(state)
+        document.querySelectorAll('.cell').forEach(e => {
+            e.style.backgroundColor = '#ffffff'
+        })
+
         timer.textContent = state.timer
         //onjoin?
 
@@ -121,8 +127,7 @@
                 stage.textContent = 'Battle!'
         }
 
-        turn.textContent = state.turn
-        //TURN
+        turns.textContent = `TURN: ${state.turns}`
         //AM I THE CURRENT PLAYER? players[que[current]]
         for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
@@ -132,12 +137,13 @@
         }
 
         state.bombedAres.forEach(area => {
+            console.log(area)
             if (area.belongsTo === -1) {
                 document.getElementById(area.position).style.backgroundColor = '#3b3b3b'
             } else {
                 let cell = document.getElementById(area.position)
-                cell.style.backgroundColor = state.players[belongsTo].color
-                cell.style.border = '3px solid #3b3b3b'
+                cell.style.backgroundColor = area.belongsTo.color
+                cell.style.border = '5px solid #3b3b3b'
             }
         })
 
@@ -217,6 +223,7 @@
             }
         }
     })
+    socket.on('resize_table', gridSize => createTable(gridSize))
     socket.on('response', response => console.log(response))
     socket.on('in_game', state => handleInGameResponse(state))
     socket.on('game_over', () => console.log('Game over?'))
