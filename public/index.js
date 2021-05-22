@@ -23,6 +23,8 @@
     const startButton = document.getElementById('start')
     const joinButton = document.getElementById('join')
     const createButton = document.getElementById('create')
+    const copyButton = document.getElementById('copyButton')
+    const copyInput = document.getElementById('copyInput')
     const cells = () => document.querySelectorAll('.cell')
     /*
     const RESPONSE = 'response';
@@ -157,6 +159,13 @@
         this.hasStarted = true
     }
 
+    copyButton.onclick = () => {
+        copyInput.select()
+        copyInput.setSelectionRange(0, 99999)
+        document.execCommand("copy")
+        alert(copyInput.value)
+    }
+
     tableSizeInput.onchange = (e) => {
         this.state.gridSize = e.target.value
         createTable(e.target.value)
@@ -169,6 +178,7 @@
 
     socket.on('game_code', code => {
         roomCode.textContent = code
+        copyInput.value = code
     })
     socket.on('join_room', response => {
         for (const [id, player] of Object.entries(response)) {

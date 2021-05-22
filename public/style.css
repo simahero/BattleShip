@@ -103,7 +103,9 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #1e385a;
+  background-color: #083e8424;
+  -webkit-box-shadow: 5px 5px 7px #00000029;
+          box-shadow: 5px 5px 7px #00000029;
 }
 
 #optionsholder form {
@@ -211,8 +213,28 @@ body {
   width: 100%;
 }
 
-#optionsholder #gameDetails #roomCode, #optionsholder #gameDetails #timer, #optionsholder #gameDetails #stage {
+#optionsholder #gameDetails .flex-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  width: 100%;
   margin-bottom: 10px;
+}
+
+#optionsholder #gameDetails #copyInput {
+  position: absolute;
+  left: -300px;
+  top: -300px;
 }
 
 #optionsholder #gameDetails #stage {

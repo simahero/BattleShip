@@ -126,8 +126,18 @@ body {
         color: white;
         text-align: center;
         width: 100%;
-        #roomCode, #timer, #stage, #turns {
+        .flex-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+            width: 100%;
             margin-bottom: 10px;
+        }
+        #copyInput {
+            position: absolute;
+            left: -300px;
+            top: -300px;
         }
         #stage {
             text-transform: uppercase;

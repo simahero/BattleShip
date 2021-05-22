@@ -18,6 +18,7 @@
     - [x] Show player's color.
     - [x] Show timer.
     - [x] Show game code.
+    - [x] Copy game code with button.
     - [ ] Move "Timer Interval" to frontend.
     - [x] Error GAME OVER
     - [ ] Mobile responibility.
