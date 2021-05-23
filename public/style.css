@@ -234,6 +234,10 @@ input {
   height: 100%;
 }
 
+#options-holder #game-details #game-info {
+  display: none;
+}
+
 #options-holder #game-details p {
   font-size: 18px;
   text-align: center;

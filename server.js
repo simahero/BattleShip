@@ -34,6 +34,7 @@ io.on(CONNECT, (socket) => {
     socket.on(JOIN_ROOM, handleJoinRoom)
     socket.on(START_GAME, handleStartGame)
     socket.on(HIT, handleClick)
+    socket.on(DISCONNECT, handleDisconnect)
 
     function handleCreateRoom({ gridSize, shipsCount, player }) {
         const gameCode = createGameCode(CODE_LENGTH)
@@ -159,7 +160,6 @@ io.on(CONNECT, (socket) => {
         const intervalId = setInterval(() => {
             const { isGameOver, state } = gameLoop(states[gameCode]);
             if (!isGameOver && state) {
-                //io.to(gameCode).emit(IN_GAME, state)
                 for (const [id, player] of Object.entries(state.players)) {
                     io.to(id).emit(IN_GAME, {
                         currentPlayer: state.currentPlayer,
@@ -171,7 +171,6 @@ io.on(CONNECT, (socket) => {
                     })
                 }
                 states[gameCode] = state
-                //emmit state to clients
             } else {
                 io.to(gameCode).emit(GAME_OVER, states[gameCode])
                 clearInterval(intervalId);
@@ -179,11 +178,9 @@ io.on(CONNECT, (socket) => {
         }, 1000 / FPS);
     }
 
-
-
-    socket.on(DISCONNECT, () => {
+    function handleDisconnect(){
         const gameCode = clientRooms[socket.id]
-        if (gameCode) {
+        if (gameCode && states[gameCode]) {
             delete clientRooms[socket.id]
             delete states[gameCode].players[socket.id]
             if (states[gameCode].players.length === 0 && states[gameCode].currentPlayer !== -1) {
@@ -191,7 +188,7 @@ io.on(CONNECT, (socket) => {
             }
             io.to(gameCode).emit(DISCONNECT_ROOM, socket.id)
         }
-    })
+    }
 
 })
 

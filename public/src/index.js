@@ -7,6 +7,8 @@
 
     const gameholder = document.getElementById('game-holder')
     const grid = document.getElementById('grid')
+    const gameInfo = document.getElementById('game-info')
+    const grid = document.getElementById('grid')
     const gameForm = document.getElementById('game-form')
     const nameInput = document.getElementById('name')
     const colorInput = document.getElementById('color')
@@ -76,36 +78,15 @@
     }
 
     function handleInGameResponse(state) {
-
-        console.log(state);
-
-        document.querySelectorAll('.cell').forEach(e => {
-            e.style.backgroundColor = '#ffffff'
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.style.backgroundColor = '#ffffff'
         })
 
-        timer.textContent = `${Math.round(state.timer)}`
-    
-        document.querySelectorAll('#players > li').forEach(e => e.style.color = 'white')
-        document.getElementById(state.que[state.currentPlayer]).style.color = 'yellow'
-
-        switch (state.stage) {
-            case -1:
-                stage.textContent = 'Waiting for other players...'
-                break
-            case 0:
-                stage.textContent = 'Placing ships'
-                break
-            case 1:
-                stage.textContent = 'Battle!'
-        }
-
-        turns.textContent = `${state.turns}`
-        //AM I THE CURRENT PLAYER? players[que[current]]
         for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
-            // if (player.isDead){
-            //     document.getElementById(id).style.textDecoration = 'line-through'
-            // }
+            if (player.isDead){
+                document.getElementById(id).style.textDecoration = 'line-through'
+            }
             player.ships.forEach(e => {
                 document.getElementById(e).style.backgroundColor = color;
             })
@@ -121,6 +102,28 @@
             }
         })
 
+        timer.textContent = `${Math.round(state.timer)}`
+        turns.textContent = `${state.turns}`
+
+        switch (state.stage) {
+            case -1:
+                stage.textContent = 'Waiting for other players...'
+                break
+            case 0:
+                stage.textContent = 'Placing ships'
+                break
+            case 1:
+                stage.textContent = 'Battle!'
+        }
+
+        document.querySelectorAll('#players > li').forEach(e => e.style.color = 'white')
+        if(state.que[state.currentPlayer]) {
+            document.getElementById(state.que[state.currentPlayer]).style.color = 'yellow'
+        }
+
+        if(state.que.length === 1){
+            //GAME OVER
+        }        
     }
 
     /*
@@ -222,7 +225,10 @@
         document.getElementById(id).remove()
     })
     socket.on('response', response => console.log(response))
-    socket.on('in_game', state => handleInGameResponse(state))
+    socket.on('in_game', state => {
+        gameInfo.style.display = 'block'
+        handleInGameResponse(state)
+    })
     socket.on('game_over', state => handleInGameResponse(state))
 
 }).call(this)
