@@ -29,13 +29,7 @@
     const copyButton = document.getElementById('copy-button')
     const copyInput = document.getElementById('copy-input')
     const cells = () => document.querySelectorAll('.cell')
-    /*
-    const RESPONSE = 'response';
-    const ERROR = 'error';
-    const CREATE_ROOM = 'create_room';
-    const JOIN_ROOM = 'join_room';
-    const HIT = 'hit';
-    */
+
 
     this.state = {
         gridSize: 8,
@@ -45,15 +39,17 @@
         }
     }
 
-    window.onload = () => {
+    window.onload = init
+
+    window.onresize = () => resizeTabe(this.state.gridSize)
+
+    function init() {
         createGrid(8)
         nameInput.placeholder = localStorage.getItem('name') || 'Player'
         colorInput.value = localStorage.getItem('color') || '#ffffff'
         op2.style.display = "none"
         op3.style.display = "none"
     }
-
-    window.onresize = () => resizeTabe(this.state.gridSize)
 
     function cellClickHandler(e) {
         socket.emit('hit', { position: e.target.id })
@@ -81,6 +77,7 @@
 
     function handleInGameResponse(state) {
 
+        console.log(state);
 
         document.querySelectorAll('.cell').forEach(e => {
             e.style.backgroundColor = '#ffffff'
@@ -89,7 +86,7 @@
         timer.textContent = `${Math.round(state.timer)}`
     
         document.querySelectorAll('#players > li').forEach(e => e.style.color = 'white')
-        document.getElementById(state.que[state.currentPlayer]).style.color = 'red'
+        document.getElementById(state.que[state.currentPlayer]).style.color = 'yellow'
 
         switch (state.stage) {
             case -1:
@@ -106,6 +103,9 @@
         //AM I THE CURRENT PLAYER? players[que[current]]
         for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
+            // if (player.isDead){
+            //     document.getElementById(id).style.textDecoration = 'line-through'
+            // }
             player.ships.forEach(e => {
                 document.getElementById(e).style.backgroundColor = color;
             })
@@ -148,9 +148,6 @@
             gameCode: codeInput.value,
             player: this.state.player
         })
-        codeInput.value = ''
-        gameForm.style.display = "none"
-        gameDetails.style.display = "flex"
     }
 
     startButton.onclick = () => {
@@ -175,7 +172,6 @@
         createGrid(e.target.value)
     }
 
-
     /*
         @SOCKET EVENTS
     */
@@ -183,6 +179,7 @@
     socket.on('game_code', code => {
         roomCode.textContent = code
         copyInput.value = code
+        //ADD START BUTTON
     })
     socket.on('join_room', response => {
         for (const [id, player] of Object.entries(response)) {
@@ -197,15 +194,32 @@
                 div.classList.add('colorHolder')
                 div.style.backgroundColor = player.color
 
-                li.appendChild(p)
                 li.append(div)
+                li.appendChild(p)
                 players.appendChild(li)
             }
         }
+        codeInput.value = ''
+        gameForm.style.display = "none"
+        gameDetails.style.display = "flex"
+
+    })
+    socket.on('start_game', gameCode => {
+        const startButton = document.createElement('button')
+        startButton.textContent = 'START'
+        startButton.style.marginTop = 'auto'
+        startButton.onclick = () => {
+            socket.emit('start_game', gameCode)
+            startButton.remove()
+        }
+        gameDetails.appendChild(startButton)
     })
     socket.on('resize_grid', gridSize => {
         this.state.gridSize = gridSize
         createGrid(gridSize)
+    })
+    socket.on('disconnect_room', id => {
+        document.getElementById(id).remove()
     })
     socket.on('response', response => console.log(response))
     socket.on('in_game', state => handleInGameResponse(state))

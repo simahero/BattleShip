@@ -37,7 +37,9 @@ input {
         #game-holder {
             width: 100%;
             padding: 0;
-            padding: 0 15px;
+            padding: 10px 15px;
+            flex: unset;
+            justify-content: flex-start;
         }
         #options-holder {
             width: 90%;
@@ -135,18 +137,22 @@ input {
     #game-details {
         display: none;
         flex-direction: column;
-        align-items: center;
+        align-items: baseline;
         justify-content: center;
         color: white;
         text-align: center;
         width: 100%;
-        .flex-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-evenly;
+        height: 100%;
+        p {
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        #room-code {
+            font-size: 24px;
+            margin-bottom: auto;
             width: 100%;
-            margin-bottom: 10px;
+            font-weight: 900;
         }
         #copy-input {
             position: absolute;
@@ -156,6 +162,10 @@ input {
         #stage {
             text-transform: uppercase;
         }
+        .players-holder {
+            width: 100%;
+            margin-top: auto;
+        }
         ul {
             li{
                 list-style: none;
@@ -163,16 +173,27 @@ input {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: space-evenly;
+                justify-content: start;
                 margin-bottom: 5px;
                 font-size: 18px;
                 .colorHolder {
-                    width: 22px;
-                    height: 22px;
+                    width: 14px;
+                    height: 14px;
                     border-radius: 50%;
                     border: 1px solid white;
+                    margin-right: 10px;
                 }
             }
+        }
+        button {
+            width: 100%;
+            margin: 5px 0;
+            height: 40px;
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 0 10px;
+            background-color: #091B33;
+            color: white;
         }
     }
 }

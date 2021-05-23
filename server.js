@@ -5,7 +5,7 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const { Server } = require("socket.io")
 
-const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT, TIMER, GAME_CODE, RESIZE_GRID, FPS } = require('./src/constants')
+const { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, START_GAME, IN_GAME, HIT, ROOM_SIZE, CODE_LENGTH, GAME_OVER, CONNECT, DISCONNECT, TIMER, GAME_CODE, RESIZE_GRID, FPS, DISCONNECT_ROOM } = require('./src/constants')
 const { createInitialState, handleJoinState, gameLoop } = require('./src/battleship')
 const { createGameCode } = require('./src/utils')
 
@@ -32,6 +32,7 @@ io.on(CONNECT, (socket) => {
 
     socket.on(CREATE_ROOM, handleCreateRoom)
     socket.on(JOIN_ROOM, handleJoinRoom)
+    socket.on(START_GAME, handleStartGame)
     socket.on(HIT, handleClick)
 
     function handleCreateRoom({ gridSize, shipsCount, player }) {
@@ -51,6 +52,7 @@ io.on(CONNECT, (socket) => {
         states[gameCode] = createInitialState(gridSize, shipsCount)
         states[gameCode] = handleJoinState(states[gameCode], socketPlayer)
 
+        socket.emit(START_GAME, gameCode)
         socket.emit(GAME_CODE, gameCode)
         socket.emit(JOIN_ROOM, states[gameCode].players)
         socket.join(gameCode)
@@ -59,7 +61,7 @@ io.on(CONNECT, (socket) => {
     function handleJoinRoom({ gameCode, player }) {
         let room = io.sockets.adapter.rooms.get(gameCode)
 
-        if (room && room.size < ROOM_SIZE) {
+        if (room && room.size < ROOM_SIZE && states[gameCode].currentPlayer === -1) {
 
             const socketPlayer = Object.assign(
                 { id: socket.id },
@@ -88,6 +90,10 @@ io.on(CONNECT, (socket) => {
         }
     }
 
+    function handleStartGame(gameCode) {
+        startGameInterval(gameCode)
+    }
+
     function handleClick({ position }) {
         const gameCode = clientRooms[socket.id]
         if (gameCode && states[gameCode]) {
@@ -112,7 +118,7 @@ io.on(CONNECT, (socket) => {
                 let hit = getHit(states[gameCode].players, position)
                 if (hit && (hit.id !== socket.id)) {
                     handleHit(hit, position, gameCode)
-                    nextTurn(gameCode)
+                    //nextTurn(gameCode)
                 } else {
                     states[gameCode].bombedAres.push({ position, belongsTo: -1 })
                     nextTurn(gameCode)
@@ -147,16 +153,19 @@ io.on(CONNECT, (socket) => {
     }
 
     function startGameInterval(gameCode) {
+        if (states[gameCode].stage !== -1) return
+        states[gameCode].stage = 0
+        states[gameCode].currentPlayer = 0
         const intervalId = setInterval(() => {
             const { isGameOver, state } = gameLoop(states[gameCode]);
             if (!isGameOver && state) {
                 //io.to(gameCode).emit(IN_GAME, state)
-                for (const [id, player] of Object.entries(states[gameCode].players)) {
+                for (const [id, player] of Object.entries(state.players)) {
                     io.to(id).emit(IN_GAME, {
                         currentPlayer: state.currentPlayer,
                         que: state.que,
                         turns: state.turns,
-                        players: {id: player},
+                        players: { id: player },
                         bombedAres: state.bombedAres,
                         timer: Math.round(state.timer)
                     })
@@ -165,27 +174,28 @@ io.on(CONNECT, (socket) => {
                 //emmit state to clients
             } else {
                 io.to(gameCode).emit(GAME_OVER, states[gameCode])
-                states[gameCode] = null;
                 clearInterval(intervalId);
             }
         }, 1000 / FPS);
     }
 
 
+
     socket.on(DISCONNECT, () => {
-        const room = clientRooms[socket.id]
-        if (room) {
+        const gameCode = clientRooms[socket.id]
+        if (gameCode) {
             delete clientRooms[socket.id]
-            delete states[room].players[socket.id]
-            if (Object.keys(states[room].players).length < 2) {
-                states[room].players = null
-                io.to(room).emit(GAME_OVER)
+            delete states[gameCode].players[socket.id]
+            if (states[gameCode].players.length === 0 && states[gameCode].currentPlayer !== -1) {
+                states[gameCode] = null;
             }
+            io.to(gameCode).emit(DISCONNECT_ROOM, socket.id)
         }
     })
 
 })
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log('Listening on: http://localhost:3000')
+const port = process.env.PORT || 8080
+server.listen(port, () => {
+    console.log(`Listening on: http://localhost:${port}`)
 })

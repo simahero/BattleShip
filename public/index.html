@@ -1,73 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
-    <link rel="stylesheet" href="./style.css">
-    <script src="/socket.io/socket.io.js"></script>
-    
-    <script defer src="./index.js"></script>
-    <title>socket.io</title>
-</head>
-
-<body>
-
-    <div class="main">
-        <div id="game-holder">
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="Content-Security-Policy"
+         content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+      <link rel="stylesheet" href="./style.css">
+      <script src="/socket.io/socket.io.js"></script>
+      <script defer src="./index.js"></script>
+      <title>socket.io</title>
+   </head>
+   <body>
+      <div class="main">
+         <div id="game-holder">
             <div id="grid">
             </div>
-        </div>
-        <div id="options-holder">
+         </div>
+         <div id="options-holder">
             <form id="game-form">
-                <div id="options-1" class="form-options">
-                    <input type="text" id="name" placeholder="NAME">
-                    <input type="color" id="color">
-                    <button id="next" type='button'>NEXT</button>
-                </div>
-                <div id="options-2" class="form-options">
-                    <button id="create" type='button'>CREATE</button>
-                    <p align="center" class="divider">OR</p>
-                    <input type="text" id="game-code" placeholder="GAME CODE">
-                    <button id="join" type='button'>JOIN</button>
-                </div>
-                <div id="options-3" class="form-options">
-                    <input type="number" id="grid-size" min="8" max="32" value="8" placeholder="MAP SIZE">
-                    <input type="number" id="ships-count" min="1" max="8" value="4" placeholder="SHIP COUNT">
-                    <button id="start" type='button'>LET'S GO</button>
-                </div>
+               <div id="options-1" class="form-options">
+                  <input type="text" id="name" placeholder="NAME">
+                  <input type="color" id="color">
+                  <button id="next" type='button'>NEXT</button>
+               </div>
+               <div id="options-2" class="form-options">
+                  <button id="create" type='button'>CREATE</button>
+                  <p align="center" class="divider">OR</p>
+                  <input type="text" id="game-code" placeholder="GAME CODE">
+                  <button id="join" type='button'>JOIN</button>
+               </div>
+               <div id="options-3" class="form-options">
+                  <input type="number" id="grid-size" min="8" max="32" value="8" placeholder="MAP SIZE">
+                  <input type="number" id="ships-count" min="1" max="8" value="4" placeholder="SHIP COUNT">
+                  <button id="start" type='button'>LET'S GO</button>
+               </div>
             </form>
-
             <div id="game-details">
-                <div class="flex-row">
-                    <h2 id="room-code"></h2>
-                    <button id="copy-button">COPY</button>
-                    <input type="text" value="" id="copy-input" >
-                </div>
-                <div class="flex-row">
-                    <h2>TIME:</h2>
-                    <h2 id="timer"></h2>
-                </div>
-                <div class="flex-row">
-                    <h2>STAGE:</h2>
-                    <h2 id="stage"></h2>
-                </div>
-                <div class="flex-row">
-                    <h2>TURN</h2>
-                    <h2 id="turns"></h2>
-                </div>
-                <div style="width: 80%;">
-                    <ul id="players">
-
-                    </ul>
-                </div>
+               <button id="copy-button">COPY</button>
+               <p id="room-code"></p>
+               <input type="text" value="" id="copy-input">
+               <p>TIME: <span id="timer">s</p>
+               <p>STAGE: <span id="stage"></span></p>
+               <p>TURNS:<span id="turns"></span></p>
+               <div class="players-holder">
+                  <ul id="players">
+                  </ul>
+               </div>
             </div>
-
-        </div>
-    </div>
-</body>
-
+         </div>
+      </div>
+   </body>
 </html>

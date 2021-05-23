@@ -21,6 +21,7 @@
     - [x] Copy game code with button.
     - [x] FPS implementation.
     - [x] Error GAME OVER
+    - [ ] Leaderboard
     - [ ] Mobile responibility.
     - [ ] Implement BOMB button.
     - [x] Add copy button / share button

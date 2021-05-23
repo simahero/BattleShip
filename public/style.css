@@ -47,7 +47,13 @@ input {
   .main #game-holder {
     width: 100%;
     padding: 0;
-    padding: 0 15px;
+    padding: 10px 15px;
+    -webkit-box-flex: unset;
+        -ms-flex: unset;
+            flex: unset;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
   }
   .main #options-holder {
     width: 90%;
@@ -216,33 +222,29 @@ input {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
   color: white;
   text-align: center;
   width: 100%;
+  height: 100%;
 }
 
-#options-holder #game-details .flex-row {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
+#options-holder #game-details p {
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+#options-holder #game-details #room-code {
+  font-size: 24px;
+  margin-bottom: auto;
   width: 100%;
-  margin-bottom: 10px;
+  font-weight: 900;
 }
 
 #options-holder #game-details #copy-input {
@@ -253,6 +255,11 @@ input {
 
 #options-holder #game-details #stage {
   text-transform: uppercase;
+}
+
+#options-holder #game-details .players-holder {
+  width: 100%;
+  margin-top: auto;
 }
 
 #options-holder #game-details ul li {
@@ -268,17 +275,29 @@ input {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
   margin-bottom: 5px;
   font-size: 18px;
 }
 
 #options-holder #game-details ul li .colorHolder {
-  width: 22px;
-  height: 22px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 1px solid white;
+  margin-right: 10px;
+}
+
+#options-holder #game-details button {
+  width: 100%;
+  margin: 5px 0;
+  height: 40px;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 0 10px;
+  background-color: #091B33;
+  color: white;
 }
 /*# sourceMappingURL=style.css.map */

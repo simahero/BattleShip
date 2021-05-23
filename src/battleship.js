@@ -22,10 +22,9 @@ function handleJoinState(state, player) {
 }
 
 const gameLoop = (state) => {
-    //game logic that runs every second
-    // if (!state) {
-    //     return
-    // }
+    if (!state) {
+        return { isGameOver: true }
+    }
 
     if (state.turns / state.shipsCount === state.que.length && state.stage === 0) {
         state.stage = 1
@@ -38,7 +37,8 @@ const gameLoop = (state) => {
             for (const [id, player] of Object.entries(state.players)) {
                 console.log(player.ships)
                 if (player.ships.length === 0) {
-                    player.isDead = true
+                    state.que = state.que.filter(x => x != id)
+                    state.players[id].isDead = true
                 } else {
                     alives++
                 }
