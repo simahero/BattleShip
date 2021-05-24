@@ -1,3 +1,6 @@
+import { gameholder, grid, gameInfo, gameForm, nameInput, colorInput, codeInput, gridSizeInput, shipsCount, gameDetails, roomCode, timer, players, stage, turns, op1, op2, op3, nextButton, startButton, joinButton, createButton, copyButton, copyInput, cells } from './elements'
+import { RESPONSE, ERROR, CREATE_ROOM, JOIN_ROOM, START_GAME, IN_GAME, HIT, GAME_OVER, GAME_CODE, RESIZE_GRID, DISCONNECT_ROOM } from './constants'
+
 (function () {
 
     const socket = io('')
@@ -5,35 +8,7 @@
         @INIT
     */
 
-    const gameholder = document.getElementById('game-holder')
-    const grid = document.getElementById('grid')
-    const gameInfo = document.getElementById('game-info')
-    const grid = document.getElementById('grid')
-    const gameForm = document.getElementById('game-form')
-    const nameInput = document.getElementById('name')
-    const colorInput = document.getElementById('color')
-    const codeInput = document.getElementById('game-code')
-    const gridSizeInput = document.getElementById('grid-size')
-    const shipsCount = document.getElementById('ships-count')
-    const gameDetails = document.getElementById('game-details')
-    const roomCode = document.getElementById('room-code')
-    const timer = document.getElementById('timer')
-    const players = document.getElementById('players')
-    const stage = document.getElementById('stage')
-    const turns = document.getElementById('turns')
-    const op1 = document.getElementById('options-1')
-    const op2 = document.getElementById('options-2')
-    const op3 = document.getElementById('options-3')
-    const nextButton = document.getElementById('next')
-    const startButton = document.getElementById('start')
-    const joinButton = document.getElementById('join')
-    const createButton = document.getElementById('create')
-    const copyButton = document.getElementById('copy-button')
-    const copyInput = document.getElementById('copy-input')
-    const cells = () => document.querySelectorAll('.cell')
-
-
-    this.state = {
+    var state = {
         gridSize: 8,
         player: {
             name: localStorage.getItem('name') || 'Player',
@@ -43,7 +18,7 @@
 
     window.onload = init
 
-    window.onresize = () => resizeTabe(this.state.gridSize)
+    window.onresize = () => resizeTabe(state.gridSize)
 
     function init() {
         createGrid(8)
@@ -54,7 +29,7 @@
     }
 
     function cellClickHandler(e) {
-        socket.emit('hit', { position: e.target.id })
+        socket.emit(HIT, { position: e.target.id })
     }
 
     function resizeTabe(gridSize) {
@@ -84,7 +59,7 @@
 
         for (const [id, player] of Object.entries(state.players)) {
             let color = player.color
-            if (player.isDead){
+            if (player.isDead) {
                 document.getElementById(id).style.textDecoration = 'line-through'
             }
             player.ships.forEach(e => {
@@ -117,13 +92,13 @@
         }
 
         document.querySelectorAll('#players > li').forEach(e => e.style.color = 'white')
-        if(state.que[state.currentPlayer]) {
+        if (state.que[state.currentPlayer]) {
             document.getElementById(state.que[state.currentPlayer]).style.color = 'yellow'
         }
 
-        if(state.que.length === 1){
+        if (state.que.length === 1) {
             //GAME OVER
-        }        
+        }
     }
 
     /*
@@ -133,8 +108,8 @@
     nextButton.onclick = () => {
         let name = nameInput.value || localStorage.getItem('name')
         let color = colorInput.value
-        this.state.player.name = name
-        this.state.player.color = color
+        state.player.name = name
+        state.player.color = color
         localStorage.setItem('name', name)
         localStorage.setItem('color', color)
         op1.style.display = "none"
@@ -147,21 +122,21 @@
     }
 
     joinButton.onclick = () => {
-        socket.emit('join_room', {
+        socket.emit(JOIN_ROOM, {
             gameCode: codeInput.value,
-            player: this.state.player
+            player: state.player
         })
     }
 
     startButton.onclick = () => {
-        socket.emit('create_room', {
+        socket.emit(CREATE_ROOM, {
             gridSize: gridSizeInput.value,
             shipsCount: shipsCount.value,
-            player: this.state.player
+            player: state.player
         })
         gameForm.style.display = "none"
         gameDetails.style.display = "flex"
-        this.hasStarted = true
+        hasStarted = true
     }
 
     copyButton.onclick = () => {
@@ -171,7 +146,7 @@
     }
 
     gridSizeInput.onchange = (e) => {
-        this.state.gridSize = e.target.value
+        state.gridSize = e.target.value
         createGrid(e.target.value)
     }
 
@@ -179,12 +154,12 @@
         @SOCKET EVENTS
     */
 
-    socket.on('game_code', code => {
+    socket.on(GAME_CODE, code => {
         roomCode.textContent = code
         copyInput.value = code
         //ADD START BUTTON
     })
-    socket.on('join_room', response => {
+    socket.on(JOIN_ROOM, response => {
         for (const [id, player] of Object.entries(response)) {
             if (!document.getElementById(id)) {
                 const li = document.createElement('li')
@@ -207,28 +182,28 @@
         gameDetails.style.display = "flex"
 
     })
-    socket.on('start_game', gameCode => {
+    socket.on(START_GAME, gameCode => {
         const startButton = document.createElement('button')
         startButton.textContent = 'START'
         startButton.style.marginTop = 'auto'
         startButton.onclick = () => {
-            socket.emit('start_game', gameCode)
+            socket.emit(START_GAME, gameCode)
             startButton.remove()
         }
         gameDetails.appendChild(startButton)
     })
-    socket.on('resize_grid', gridSize => {
-        this.state.gridSize = gridSize
+    socket.on(RESIZE_GRID, gridSize => {
+        state.gridSize = gridSize
         createGrid(gridSize)
     })
-    socket.on('disconnect_room', id => {
+    socket.on(DISCONNECT_ROOM, id => {
         document.getElementById(id).remove()
     })
-    socket.on('response', response => console.log(response))
-    socket.on('in_game', state => {
+    socket.on(RESPONSE, response => console.log(response))
+    socket.on(IN_GAME, state => {
         gameInfo.style.display = 'block'
         handleInGameResponse(state)
     })
-    socket.on('game_over', state => handleInGameResponse(state))
+    socket.on(GAME_OVER, state => handleInGameResponse(state))
 
 }).call(this)

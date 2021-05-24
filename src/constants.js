@@ -10,7 +10,6 @@ const START_GAME = 'start_game'
 const GAME_OVER = 'game_over'
 const IN_GAME = 'in_game'
 const RESIZE_GRID = 'resize_grid'
-const ALLOWED_HIT = 'allowed_hit'
 const HIT = 'hit'
 const ROOM_SIZE = 6
 const CODE_LENGTH = 6
@@ -30,7 +29,6 @@ module.exports = {
     GAME_OVER,
     IN_GAME,
     RESIZE_GRID,
-    ALLOWED_HIT,
     HIT,
     ROOM_SIZE,
     CODE_LENGTH,
